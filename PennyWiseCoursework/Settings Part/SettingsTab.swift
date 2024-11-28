@@ -57,18 +57,7 @@ struct SettingsTab: View {
                     }
                 }
 
-                Section {
-                    Button(action: {
-                        // Log out action
-                        print("Logging out...")
-                    }) {
-                        HStack {
-                            Image(systemName: "power")
-                            Text("Logout")
-                                .foregroundColor(.red)
-                        }
-                    }
-                }
+               
             }
             .listStyle(InsetGroupedListStyle())
             .navigationTitle("Settings")

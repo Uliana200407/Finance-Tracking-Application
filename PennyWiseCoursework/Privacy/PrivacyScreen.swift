@@ -9,17 +9,15 @@ import UserNotifications
 struct PrivacyScreen: View {
     @State private var locationAccess: Bool = false
     @State private var notificationsAccess: Bool = false
-    @State private var isLoggedIn: Bool = true // Simulate login state
+    @State private var isLoggedIn: Bool = true
     @State private var showPrivacyPolicy = false
 
     let locationManager = LocationManager()
 
-    // Request location access
     func requestLocationAccess() {
         locationManager.requestLocationPermission()
     }
 
-    // Request notifications access
     func requestNotificationPermission() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
             DispatchQueue.main.async {
@@ -34,7 +32,6 @@ struct PrivacyScreen: View {
         }
     }
 
-    // Check current notification settings
     func checkNotificationSettings() {
         UNUserNotificationCenter.current().getNotificationSettings { settings in
             DispatchQueue.main.async {
@@ -79,7 +76,6 @@ struct PrivacyScreen: View {
 
                 Section {
                     Button(action: {
-                        // Handle log out action or other related tasks
                     }) {
                         Text("Log Out")
                             .foregroundColor(.red)
@@ -89,7 +85,7 @@ struct PrivacyScreen: View {
             .navigationBarTitle("Privacy Settings")
         }
         .onAppear {
-            checkNotificationSettings() // Check notification status when the screen appears
+            checkNotificationSettings()
         }
     }
 }
@@ -98,14 +94,12 @@ struct PrivacyPolicyView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                // Title
                 Text("Privacy Policy")
                     .font(.largeTitle)
                     .fontWeight(.bold)
                     .padding(.top, 20)
                     .padding(.horizontal)
 
-                // Privacy policy content
                 Text("""
                 We value your privacy and are committed to protecting your personal data. This policy outlines how we collect, store, and use your information.
 
