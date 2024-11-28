@@ -3,30 +3,35 @@ import CoreData
 
 struct TransactionsTab: View {
     @Environment(\.managedObjectContext) private var viewContext
+    
+    @State private var isAscending = false // Track the sort direction
 
     @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \TransactionEntity.date, ascending: false)],
-        animation: .default)
-    private var allTransactions: FetchedResults<TransactionEntity>
+        sortDescriptors: [
+            SortDescriptor(\TransactionEntity.date, order: .reverse) // Default descending order
+        ],
+        animation: .default
+    ) private var allTransactions: FetchedResults<TransactionEntity>
 
     @State private var showingAddTransaction = false
-    @State private var selectedFilter: String? = nil // Фільтр за категоріями (доходи, витрати)
-    @State private var selectedCurrency: Currency = Currency.availableCurrencies[0] // Початкова валюта: UAH
+    @State private var selectedFilter: String? = nil
+    @State private var selectedCurrency: Currency = Currency.availableCurrencies[0]
 
     var body: some View {
         NavigationView {
-            VStack(spacing: 20) {
-
+            VStack(spacing: 12) {
+                
                 FinanceCard(
                     income: calculateTotal(for: "income"),
                     expense: calculateTotal(for: "expense"),
                     currencyCode: selectedCurrency.code
                 )
 
-                VStack(spacing: 20) {
-                    HStack(spacing: 30) {
+                VStack(spacing: 12) {
+                    HStack(spacing: 24) {
                         CircularButton(icon: "calendar") {
-                            print("Сортування за датою")
+                            isAscending.toggle() 
+                            updateSortDirection()
                         }
 
                         CircularButton(icon: "plus.circle.fill") {
@@ -65,27 +70,22 @@ struct TransactionsTab: View {
                         }
                     }
                 }
-                .listStyle(InsetGroupedListStyle())
+                .navigationTitle("Transactions")
             }
-            .sheet(isPresented: $showingAddTransaction) {
-                AddTransactionView()
-            }
-            .navigationTitle("Transactions")
         }
     }
 
     private func filteredTransactions() -> [TransactionEntity] {
-        if let filter = selectedFilter {
-            return allTransactions.filter { $0.type == filter }
+        if let selectedFilter = selectedFilter {
+            return allTransactions.filter { $0.type == selectedFilter }
         }
         return Array(allTransactions)
     }
-
     private func calculateTotal(for type: String) -> Double {
-        allTransactions
-            .filter { $0.type == type }
-            .reduce(0) { $0 + $1.amount } * selectedCurrency.rateToUAH
-    }
+         allTransactions
+             .filter { $0.type == type }
+             .reduce(0) { $0 + $1.amount } * selectedCurrency.rateToUAH
+     }
 
     private func deleteTransaction(_ transaction: TransactionEntity) {
         withAnimation {
@@ -96,5 +96,10 @@ struct TransactionsTab: View {
                 print("Error deleting transaction: \(error)")
             }
         }
+    }
+
+    private func updateSortDirection() {
+        let newSortOrder: SortDescriptor<TransactionEntity> = SortDescriptor(\TransactionEntity.date, order: isAscending ? .forward : .reverse)
+        allTransactions.sortDescriptors = [newSortOrder]
     }
 }

@@ -15,7 +15,7 @@ struct LaunchScreen: View {
                 .edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 30) {
-                Image("Image")
+                Image("Image") // Заміни на свій ресурс
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 100, height: 100)
@@ -50,43 +50,48 @@ struct LaunchScreen: View {
                     isFirstTime = false
                 }) {
                     Text("Get Started")
-                        .fontWeight(.bold)
-                        .frame(width: 250, height: 50)
-                        .background(Color.yellow)
-                        .foregroundColor(.black)
-                        .cornerRadius(25)
-                }
-                .padding(.bottom, 50)
+                                        .font(.system(size: 20, weight: .semibold))
+                                        .foregroundColor(.white)
+                                        .frame(maxWidth: .infinity)
+                                        .padding()
+                                        .background(Color.orange)
+                                        .cornerRadius(25)
+                                        .shadow(radius: 25)
+                                }
+                                .padding(.horizontal, 35)
+                                .padding(.bottom, 40)
             }
         }
     }
-    
+
+
     @ViewBuilder
-    func PointView(symbol: String, title: String, subTitle: String) -> some View {
-        HStack(spacing: 15) {
-            Image(systemName: symbol)
-                .font(.system(size: 40))
-                .foregroundStyle(LinearGradient(
-                    gradient: Gradient(colors: [Color.yellow, Color.orange]),
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                ))
-                .frame(width: 60, height: 60)
-                .background(Color.white.opacity(0.1))
-                .clipShape(Circle())
-            
-            VStack(alignment: .leading, spacing: 5) {
-                Text(title)
-                    .font(.title3)
-                    .fontWeight(.semibold)
-                    .foregroundColor(.white)
-                Text(subTitle)
-                    .font(.subheadline)
-                    .foregroundColor(Color.white.opacity(0.7))
+        func PointView(symbol: String, title: String, subTitle: String) -> some View {
+            HStack(spacing: 15) {
+                Image(systemName: symbol)
+                    .font(.system(size: 40))
+                    .foregroundStyle(LinearGradient(
+                        gradient: Gradient(colors: [Color.yellow, Color.orange]),
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    ))
+                    .frame(width: 60, height: 60)
+                    .background(Color.white.opacity(0.1))
+                    .clipShape(Circle())
+                
+                VStack(alignment: .leading, spacing: 5) {
+                    Text(title)
+                        .font(.title3)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.white)
+                    Text(subTitle)
+                        .font(.subheadline)
+                        .foregroundColor(Color.white.opacity(0.7))
+                }
             }
         }
     }
-}
+
 
 #Preview {
     LaunchScreen()

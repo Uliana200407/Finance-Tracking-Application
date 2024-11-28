@@ -2,14 +2,13 @@ import SwiftUI
 import CoreData
 import PhotosUI
 
-
 struct ProfileScreen: View {
     @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest(entity: Profile.entity(), sortDescriptors: []) private var profiles: FetchedResults<Profile>
     
     @State private var username: String = "John Doe"
     @State private var email: String = "johndoe@example.com"
-    @State private var profilePicture: Image? = Image(systemName: "person.crop.circle.fill")
+    @State private var profilePicture: Image? = Image("avatar") // Default avatar from assets
     
     @State private var selectedItem: PhotosPickerItem? = nil
     @State private var selectedImageData: Data? = nil
@@ -46,78 +45,47 @@ struct ProfileScreen: View {
     }
 
     var body: some View {
-        VStack(spacing: 20) {
-            VStack {
-                profilePicture?
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 150, height: 150)
-                    .clipShape(Circle())
-                    .overlay(Circle().stroke(Color.white, lineWidth: 4))
-                    .shadow(radius: 10)
-                
-                Button(action: {
-                    profilePicture = Image(systemName: "person.crop.circle.badge.plus")
-                }) {
-                    Text("Change Profile Picture")
-                        .font(.headline)
-                        .foregroundColor(.purple)
-                }
-                .padding(.top, 10)
-            }
-            .padding(.top, 50)
-
-            VStack(alignment: .leading) {
-                Text("Username")
-                    .font(.subheadline)
-                    .foregroundColor(.gray)
-                
-                TextField("Enter your username", text: $username)
-                    .padding()
-                    .background(Color.white)
-                    .cornerRadius(10)
-                    .shadow(radius: 5)
-                    .padding(.bottom, 15)
-            }
-            .padding(.horizontal)
-
-            VStack(alignment: .leading) {
-                Text("Email")
-                    .font(.subheadline)
-                    .foregroundColor(.gray)
-                
-                TextField("Enter your email", text: $email)
-                    .padding()
-                    .background(Color.white)
-                    .cornerRadius(10)
-                    .shadow(radius: 5)
-                    .keyboardType(.emailAddress)
-                    .padding(.bottom, 15)
-            }
-            .padding(.horizontal)
+        VStack(spacing: 15) {
+            // Profile picture
+            profilePicture?
+                .resizable()
+                .scaledToFit()
+                .frame(width: 100, height: 100)
+                .padding(.top, 30) // Add padding to top
             
-            Button(action: {
-                saveProfile()
-            }) {
-                Text("Save Profile")
-                    .font(.headline)
+            // Username TextField
+            TextField("Username", text: $username)
+                .padding()
+                .background(Color.gray.opacity(0.1))
+                .cornerRadius(10)
+                .padding(.horizontal, 20)
+            
+            // Email TextField
+            TextField("Email", text: $email)
+                .padding()
+                .background(Color.gray.opacity(0.1))
+                .cornerRadius(10)
+                .padding(.horizontal, 20)
+            
+            // Save Button
+            Button(action: saveProfile) {
+                Text("Save")
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.purple)
+                    .background(Color.purple) // Purple button color
                     .foregroundColor(.white)
                     .cornerRadius(10)
-                    .shadow(radius: 5)
+                    .padding(.horizontal, 20)
             }
-            .padding(.horizontal)
-
-            Spacer()
+            .padding(.top, 20)
         }
-        .background(Color(UIColor.systemBackground).edgesIgnoringSafeArea(.all))
+        .frame(maxHeight: .infinity, alignment: .top) // Ensures the layout starts from the top
         .onAppear {
-            loadProfile() 
+            loadProfile()
         }
     }
 }
+
 
 struct ProfileScreen_Previews: PreviewProvider {
     static var previews: some View {

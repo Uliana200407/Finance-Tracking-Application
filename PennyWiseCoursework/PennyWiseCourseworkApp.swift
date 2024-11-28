@@ -1,19 +1,17 @@
 import SwiftUI
 
+
+
 @main
 struct PennyWiseCourseworkApp: App {
-    @AppStorage("isFirstLaunch") private var isFirstLaunch: Bool = true
+    @AppStorage("isFirstTime") private var isFirstTime: Bool = true
     let persistenceController = PersistenceController.shared
     
     var body: some Scene {
         WindowGroup {
-            if isFirstLaunch {
+            if isFirstTime {
                 LaunchScreen()
-                    .onAppear {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { // 2 секунди
-                            isFirstLaunch = false
-                        }
-                    }
+                    .environment(\.managedObjectContext, persistenceController.container.viewContext)
             } else {
                 ContentView()
                     .environment(\.managedObjectContext, persistenceController.container.viewContext)
